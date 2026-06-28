@@ -4,15 +4,15 @@ from biblioteca.user import User
 
 def test_display_available_books():
     library = Library('Biblioteca')
-    library.display_available_books()
+    response = library.display_available_books()
     
-    assert 'Nenhum livro disponível.'
+    assert 'Nenhum livro disponível.' == response
     
 def test_display_collection():
     library = Library('Biblioteca')
-    library.display_collection()
+    response = library.display_collection()
     
-    assert 'Nenhum livro cadastrado.'
+    assert 'Nenhum livro cadastrado.' == response
     
 def test_display_collection():
     library = Library('Biblioteca')
@@ -38,6 +38,6 @@ def test_return_undefined_book():
     
     library.loan_book(book, user)
     
-    response = library.return_book(book_2)
+    response = library.return_book(book_2, user)
     
     assert 'Livro não está em empréstimo' == response

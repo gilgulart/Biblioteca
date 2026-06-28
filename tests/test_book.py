@@ -29,12 +29,11 @@ def test_loan_book():
     assert not library.is_available(book)
     assert library.is_available(book_2)
     assert book in user.books_on_loan
-    assert (f"Livro: {book}\nEmprestado dia {library.loan_date.strftime('%d-%m-%Y')}\n"
-            f"Prazo de renovação {library.renewal_date.strftime('%d-%m-%Y')}")
     
 def test_return_book():
     library = Library('Biblioteca')
     user = User('Gilberto', 'gilberto@email.com')
+    library.add_user(user)
     
     book = Book('O Morro dos ventos uivantes', 'Emily Bronte', 1847)
     
@@ -42,16 +41,17 @@ def test_return_book():
     
     library.loan_book(book, user)
     
-    library.return_book(book)
+    response = library.return_book(book,user)
         
     assert library.is_available(book)
     assert not library.is_on_loan(book)
     assert book in library.collection
-    assert f"Livro: {book} devolvido"
+    assert f"Livro: {book} devolvido" == response
     
 def test_book_not_available():
     library = Library('Biblioteca')
     user = User('Gilberto', 'gilberto@email.com')
+    library.add_user(user)
     
     book = Book('O Morro dos ventos uivantes', 'Emily Bronte', 1847)
     
@@ -60,9 +60,9 @@ def test_book_not_available():
     library.loan_book(book, user)
     
     
-    library.loan_book(book, user)
+    response =  library.loan_book(book, user)
     
-    assert f"Livro: {book} não está disponível"
+    assert f"Livro: {book} não está disponível" == response
     
     
 def test_add_the_same_book():

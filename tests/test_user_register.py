@@ -4,11 +4,11 @@ from biblioteca.user import User
 
 def test_user_register():
     library = Library('Biblioteca')
-    
-    response = library.add_user('Cicrano de tal')
+    user = User('Cicrano de tal', 'cicrano@gmail.com')
+    library.add_user(user)
 
     assert len(library.users) == 1
-    assert 'Cicrano de tal' in library.users
+    assert user in library.users
     
 def test_diferent_id():
     fulano = User('Fulano', 'fulano@email.com')
