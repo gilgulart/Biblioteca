@@ -23,4 +23,21 @@ def test_display_collection():
     library.loan_book(book, user)
     
     library.display_on_loan_books()
+
+def test_return_undefined_book():
     
+    library = Library('Biblioteca')
+    user = User('Fulano', 'fulano@email.com')
+    
+    book = Book('O Morro dos ventos uivantes', 'Emily Bronte', 1847)
+    book_2 = Book('Antifrágil', 'Nassim Taleb', 2012)
+    
+    library.add_user(user)
+    library.add_book(book)
+    library.add_book(book_2)
+    
+    library.loan_book(book, user)
+    
+    response = library.return_book(book_2)
+    
+    assert 'Livro não está em empréstimo' == response

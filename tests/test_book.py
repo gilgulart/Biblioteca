@@ -65,4 +65,17 @@ def test_book_not_available():
     assert f"Livro: {book} não está disponível"
     
     
+def test_add_the_same_book():
+    library = Library('Biblioteca')
+    user = User('Gilberto', 'gilberto@email.com')
     
+    
+    book = Book('O Morro dos ventos uivantes', 'Emily Bronte', 1847)
+    
+    library.add_book(book)
+    library.add_user(user)
+    user_response = library.add_user(user)
+    response = library.add_book(book)
+    
+    assert 'Este livro já foi catalogado anteriormente' == response
+    assert 'Usuário já foi cadastrado anteriormente' == user_response

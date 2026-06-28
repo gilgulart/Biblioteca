@@ -69,7 +69,7 @@ Ao devolver um livro, o sistema deverá:
 
 * remover o livro da lista de empréstimos;
 * adicioná-lo novamente à lista de disponíveis;
-* registrar a data da devolução (opcional).
+* registrar a data da devolução.
 
 Não será permitido devolver um livro que não esteja emprestado.
 

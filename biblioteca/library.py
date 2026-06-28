@@ -58,10 +58,16 @@ class Library:
         
                 
     def add_user(self, user: User):
+        if user in self.users:
+            return "Usuário já foi cadastrado anteriormente"
+
         self.users.append(user)
     
     
     def add_book(self, book: Book):
+        if book in self.collection:
+            return 'Este livro já foi catalogado anteriormente'
+        
         self.collection.append(book)
         return self.available.append(book)
     
@@ -77,7 +83,6 @@ class Library:
     def loan_book(self, book: Book, user: User):
         if user not in self.users:
             return 'Usuário não cadastrado'
-
         
         if self.is_available(book):
             self.available.remove(book)
@@ -92,6 +97,9 @@ class Library:
 
     
     def return_book(self, book: Book):
+        if self.is_available(book):
+            return 'Livro não está em empréstimo'
+        
         if self.is_on_loan(book):
             self.on_loan.remove(book)
             self.available.append(book)
