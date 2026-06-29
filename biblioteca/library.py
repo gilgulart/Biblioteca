@@ -1,13 +1,14 @@
 from datetime import datetime, timedelta
 from biblioteca.book import Book
 from biblioteca.user import User
+from biblioteca.loan import Loan
 
 class Library:
     def __init__(self, name):
         self.name = name
         self.collection = []
         self.users = []
-        self.on_loan = []
+        self.loans = []
         self.available = []
         self.date = datetime
     
@@ -39,12 +40,13 @@ class Library:
         
             
     def display_on_loan_books(self):
-        if not self.on_loan:
+        open_loans = [loan for loan in self.loans if not loan.is_returned]
+        if not open_loans:
             return 'Nenhum livro emprestado.'
         
         print('========= Livros Emprestados =========\n')
-        for book in self.on_loan:
-            print(f"- {book}\n")
+        for loan in open_loans:
+            print(f"- {loan.book}\n")
         
             
     def display_user_stats(self, user: User):
@@ -77,34 +79,53 @@ class Library:
     
     
     def is_on_loan(self, book: Book):   
-        return book in self.on_loan
+        return any(loan.book == book and not loan.is_returned for loan in self.loans)
 
 
     def loan_book(self, book: Book, user: User):
         if user not in self.users:
             return 'Usuário não cadastrado'
         
-        if self.is_available(book):
-            loan_date = self.date.now()
-            renewal_date = loan_date + timedelta(days=7)
-            
-            self.available.remove(book)
-            self.on_loan.append(book)
-            user.books_on_loan.append(book)
-            return (
-            f"Livro: {book}\nEmprestado dia {loan_date.strftime('%d-%m-%Y')}\n"
-            f"Prazo de renovação {renewal_date.strftime('%d-%m-%Y')}"
-                ) 
-
-        return f"Livro: {book} não está disponível"
-
+        if not self.is_available(book):
+            return f'Livro: {book} não está disponível'
+        
+        self.available.remove(book)
+        loan = Loan(book, user)
+        self.loans.append(loan)
+        user.books_on_loan.append(book)
+        
+        return (
+        f"Livro: {book}\nEmprestado dia {loan.loan_date.strftime('%d-%m-%Y')}\n"
+        f"Prazo de renovação {loan.due_date.strftime('%d-%m-%Y')}"
+            ) 
     
     def return_book(self, book: Book, user: User):
-        if self.is_available(book):
+        loan = self._find_open_loan(book)
+        if loan is None:
             return 'Livro não está em empréstimo'
         
-        if self.is_on_loan(book):
-            self.on_loan.remove(book)
-            user.books_on_loan.remove(book)
-            self.available.append(book)
-            return f"Livro: {book} devolvido"
+        loan.mark_as_returned()
+        user.books_on_loan.remove(book)
+        self.available.append(book)
+        return f"Livro: {book} devolvido"
+            
+    def _find_open_loan(self, book: Book):
+        for loan in self.loans:
+            if loan.book == book and not loan.is_returned:
+                return loan
+        return None
+    
+    def loan_history(self, user: User):
+        return [loan for loan in self.loans if loan.user == user]
+
+library = Library('Biblioteca Pessoal')
+user = User('Gilberto', 'gilberto@gmail.com')
+library.add_user(user)
+
+book = Book('Antifrágil', 'Nassim Taleb', 2012)
+library.add_book(book)
+
+library.loan_book(book, user)
+library.return_book(book, user)
+
+print(library.loan_history(user))

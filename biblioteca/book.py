@@ -9,3 +9,11 @@ class Book:
     
     def __repr__(self):
         return self.__str__()
+    
+    def __eq__(self, other):
+        if not isinstance(self, Book):
+            return NotImplemented
+        return (self.title, self.author, self.year) == (other.title, other.author, other.year)
+    
+    def __hash__(self):
+        return hash(self.title, self.author, self.year) 

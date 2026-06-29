@@ -14,7 +14,7 @@ def test_display_collection():
     
     assert 'Nenhum livro cadastrado.' == response
     
-def test_display_collection():
+def test_display_on_loan_book():
     library = Library('Biblioteca')
     user = User('Fulano', 'fulano@email.com')
     book = Book('O Morro dos ventos uivantes', 'Emily Bronte', 1847)
